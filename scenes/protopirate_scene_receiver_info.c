@@ -29,6 +29,9 @@ void protopirate_scene_receiver_info_on_enter(void* context) {
     furi_check(context);
     ProtoPirateApp* app = context;
 
+    //Stop chargin while using the radio.
+    furi_hal_power_suppress_charge_enter();
+
     // Always reset per-enter to avoid stale static state
     is_emu_off = false;
 
@@ -250,4 +253,5 @@ void protopirate_scene_receiver_info_on_exit(void* context) {
     furi_check(context);
     ProtoPirateApp* app = context;
     widget_reset(app->widget);
+    furi_hal_power_suppress_charge_exit();
 }
