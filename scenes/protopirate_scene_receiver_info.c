@@ -190,17 +190,42 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
             FlipperFormat* ff =
                 protopirate_history_get_raw_data(app->txrx->history, app->txrx->idx_menu_chosen);
 
+            FuriString* filename_str = furi_string_alloc();
+
             if(ff) {
-                // Extract protocol name
-                FuriString* protocol = furi_string_alloc();
-                flipper_format_rewind(ff);
-                if(!flipper_format_read_string(ff, "Protocol", protocol)) {
-                    furi_string_set_str(protocol, "Unknown");
+                if(app->datetime_filenames) {
+                    //Get the date and time to save.
+                    DateTime date_time;
+                    furi_hal_rtc_get_datetime(&date_time);
+
+                    furi_string_printf(
+                        filename_str,
+                        "%.4d-%.2d-%.2d_%.2d.%.2d.%.2d",
+                        date_time.year,
+                        date_time.month,
+                        date_time.day,
+                        date_time.hour,
+                        date_time.minute,
+                        date_time.second);
+
+                } else {
+                    // Extract protocol name
+                    flipper_format_rewind(ff);
+                    if(!flipper_format_read_string(ff, "Protocol", filename_str)) {
+                        furi_string_set_str(filename_str, "Unknown");
+                    }
+
+                    // Clean protocol name for filename
+                    furi_string_replace_all(filename_str, "/", "_");
+                    furi_string_replace_all(filename_str, " ", "_");
                 }
 
                 FuriString* saved_path = furi_string_alloc();
                 if(protopirate_storage_save_capture(
-                       ff, furi_string_get_cstr(protocol), saved_path)) {
+                       ff,
+                       furi_string_get_cstr(filename_str),
+                       saved_path,
+                       app->datetime_filenames)) {
                     // Show success notification
                     notification_message(app->notifications, &sequence_success);
                     FURI_LOG_I(TAG, "Saved to: %s", furi_string_get_cstr(saved_path));
@@ -209,7 +234,7 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
                     FURI_LOG_E(TAG, "Save failed");
                 }
 
-                furi_string_free(protocol);
+                furi_string_free(filename_str);
                 furi_string_free(saved_path);
             }
             consumed = true;

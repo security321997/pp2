@@ -81,7 +81,8 @@ bool protopirate_storage_init(void);
 bool protopirate_storage_save_capture(
     FlipperFormat* flipper_format,
     const char* protocol_name,
-    FuriString* out_path);
+    FuriString* out_path,
+    bool datetime_filenames);
 
 // Save to temp file for emulation
 bool protopirate_storage_save_temp(FlipperFormat* flipper_format);
@@ -90,7 +91,10 @@ bool protopirate_storage_save_temp(FlipperFormat* flipper_format);
 void protopirate_storage_delete_temp(void);
 
 // Get next available filename for a protocol
-bool protopirate_storage_get_next_filename(const char* protocol_name, FuriString* out_filename);
+bool protopirate_storage_get_next_filename(
+    const char* protocol_name,
+    FuriString* out_filename,
+    bool dont_add_zero);
 
 // Delete a file
 bool protopirate_storage_delete_file(const char* file_path);
