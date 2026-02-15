@@ -1,5 +1,7 @@
 // scenes/protopirate_scene_receiver_info.c
 #include "../protopirate_app_i.h"
+#ifdef ENABLE_RECEIVER_SCENE
+
 #include "../helpers/protopirate_storage.h"
 
 #define TAG "ProtoPirateReceiverInfo"
@@ -280,3 +282,4 @@ void protopirate_scene_receiver_info_on_exit(void* context) {
     widget_reset(app->widget);
     furi_hal_power_suppress_charge_exit();
 }
+#endif //ENABLE_RECEIVER_SCENE

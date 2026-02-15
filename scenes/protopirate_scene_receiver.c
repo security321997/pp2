@@ -1,5 +1,6 @@
 // scenes/protopirate_scene_receiver.c
 #include "../protopirate_app_i.h"
+#ifdef ENABLE_RECEIVER_SCENE
 #include "../helpers/protopirate_storage.h"
 #include "views/protopirate_receiver.h"
 #include <notification/notification_messages.h>
@@ -392,3 +393,4 @@ void protopirate_scene_receiver_view_callback(ProtoPirateCustomEvent event, void
     ProtoPirateApp* app = context;
     view_dispatcher_send_custom_event(app->view_dispatcher, event);
 }
+#endif //ENABLE_RECEIVER_SCENE

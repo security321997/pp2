@@ -1,5 +1,7 @@
 // scenes/protopirate_scene_saved_info.c
 #include "../protopirate_app_i.h"
+#ifdef ENABLE_SAVED_SCENE
+
 #include "../helpers/protopirate_storage.h"
 
 #define TAG "ProtoPirateSceneSavedInfo"
@@ -282,3 +284,4 @@ void protopirate_scene_saved_info_on_exit(void* context) {
     FURI_LOG_I(TAG, "Exiting SavedInfo scene");
     widget_reset(app->widget);
 }
+#endif //ENABLE_SAVED_SCENE
