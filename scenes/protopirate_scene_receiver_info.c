@@ -202,25 +202,29 @@ bool protopirate_scene_receiver_info_on_event(void* context, SceneManagerEvent e
 
                     furi_string_printf(
                         filename_str,
-                        "%.4d-%.2d-%.2d_%.2d.%.2d.%.2d",
+                        "%.2d%.2d%.2d_%.2d.%.2d.%.2d_",
                         date_time.year,
                         date_time.month,
                         date_time.day,
                         date_time.hour,
                         date_time.minute,
                         date_time.second);
-
-                } else {
-                    // Extract protocol name
-                    flipper_format_rewind(ff);
-                    if(!flipper_format_read_string(ff, "Protocol", filename_str)) {
-                        furi_string_set_str(filename_str, "Unknown");
-                    }
-
-                    // Clean protocol name for filename
-                    furi_string_replace_all(filename_str, "/", "_");
-                    furi_string_replace_all(filename_str, " ", "_");
                 }
+
+                // Extract protocol name
+                FuriString* protocol = furi_string_alloc();
+                flipper_format_rewind(ff);
+                if(!flipper_format_read_string(ff, "Protocol", protocol)) {
+                    furi_string_set_str(protocol, "Unknown");
+                }
+
+                //Add the protocol
+                furi_string_cat(filename_str, protocol);
+                furi_string_free(protocol);
+
+                // Clean protocol name for filename
+                furi_string_replace_all(filename_str, "/", "_");
+                furi_string_replace_all(filename_str, " ", "_");
 
                 FuriString* saved_path = furi_string_alloc();
                 if(protopirate_storage_save_capture(
